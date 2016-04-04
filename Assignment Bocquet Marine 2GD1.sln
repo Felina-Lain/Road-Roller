@@ -1,0 +1,23 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{2D067825-6422-0A81-256F-D51714314FC5}") = "Assignment Bocquet Marine 2GD1", "Assembly-CSharp.csproj", "{76DF82AE-B780-DD83-F537-78A255B853D8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{76DF82AE-B780-DD83-F537-78A255B853D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76DF82AE-B780-DD83-F537-78A255B853D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76DF82AE-B780-DD83-F537-78A255B853D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76DF82AE-B780-DD83-F537-78A255B853D8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
+	EndGlobalSection
+EndGlobal

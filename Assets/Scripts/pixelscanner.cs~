@@ -1,0 +1,48 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class pixelscanner : MonoBehaviour {
+
+		public Transform mark1;
+		public Transform mark2;
+		public int markcount;
+		public int speed;
+		
+		// Use this for initialization
+		void Start () {
+			markcount = 1;
+		}
+
+		// Update is called once per frame
+		void Update () {
+
+			switch (markcount) {
+
+			case 0:
+			Vector3 positio = this.transform.position;
+			positio.x--;
+			this.transform.position = positio;
+
+				break;
+
+			case 1:
+			Vector3 position = this.transform.position;
+			position.x++;
+			this.transform.position = position;
+
+				break;
+
+			}
+		}
+
+		void OnTriggerEnter(Collider other) {
+
+		if (other.tag == "Mark1") {
+				markcount = 1;
+			}
+			if (other.tag == "Mark2") {
+				markcount = 0;
+			}
+
+		}
+	}

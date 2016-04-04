@@ -1,0 +1,169 @@
+﻿//using UnityEngine;
+//using System.Collections;
+//
+//public class propsGenerator : MonoBehaviour {
+//
+//	public GameObject objectToSpawn;
+//	public int[] objectsPerWave = new int[2]{5,10};
+//	public float nextInWaveInstanceMultiplier = 3;
+//	public Color32 colorToSearch;
+//	public float yOriginalTextureDecal = 530;	//Le numero de la ligne Y en pixels
+//	public float[] nextInstanceTimeRange = new float[SIZEARRAY]{1f,2f};
+//	private const int SIZEARRAY = 2;	//Juste un test pour bloquer la taille d'un array dans un inspector
+//
+//	Texture2D currenttexture;
+//	Vector3 boundPointLeft;
+//	Vector3 boundPointRight;
+//	float nextInstance = 0.25f;
+//	roadmove roadMotorscript;
+//	int remainingInCurrentWave = 0;
+//	bool leftSpace = true;
+//	float xFound = 0f;	//premier pixel de la bonne couleur trouve
+//	float x2Found = 0f;	//dernier pixel de la bonne couleur trouve
+//	float yFound = 0f;	//ligne Y actuelle
+//	int x = 0;	//int utilise dans plusieurs boucles
+//
+//	void Start(){
+//
+//		currenttexture = GetComponent<Renderer>().material.GetTexture("_MainTex") as Texture2D;
+//
+//		//Recherche des V3 qui servent d'extremite pour le spawn (les vertice les plus loin du centre)
+//		Mesh theMesh = GetComponent<MeshFilter>().mesh;
+//		Vector3 boundPointMin = theMesh.bounds.min;
+//		Vector3 boundPointMax = theMesh.bounds.max;
+//		boundPointLeft = new Vector3(boundPointMin.x, boundPointMin.y, boundPointMax.z);
+//		boundPointRight = new Vector3(boundPointMax.x, boundPointMin.y, boundPointMax.z);
+//
+//		//Test, decocher pour voir des objets apparaitre aux V3 min et max de spawn
+//		//Instantiate(objectToSpawn, boundPointLeft, Quaternion.identity);
+//		//Instantiate(objectToSpawn, boundPointRight, Quaternion.identity);
+//
+//		roadMotorscript = GetComponent<roadmove>();
+//
+//		//Positionnement en pixel de l'axe Y (la ligne sur laquelle on spawn les props)
+//		yFound = yOriginalTextureDecal;
+//
+//	}
+//
+//	void Update() {
+//
+//		yFound = Mathf.Lerp(yFound, yFound + 2048f, roadMotorscript.scrollSpeed * Time.deltaTime);
+//
+//		//'Timer' de distance
+//		if(roadMotorscript.offset >= nextInstance){
+//
+//			//Definition de la prochaine instance
+//			if(remainingInCurrentWave > 0){
+//				//Vague
+//				remainingInCurrentWave --;
+//				nextInstance = roadMotorscript.offset + Random.Range(nextInstanceTimeRange[0] / nextInWaveInstanceMultiplier, nextInstanceTimeRange[1] / nextInWaveInstanceMultiplier);
+//			}else{
+//				//Fin de vague
+//				remainingInCurrentWave = Random.Range(objectsPerWave[0], objectsPerWave[1]);
+//				nextInstance = roadMotorscript.offset + Random.Range(nextInstanceTimeRange[0], nextInstanceTimeRange[1]);
+//				leftSpace = (Random.Range(0,2) > 0) ? true : false;
+//			}
+//
+//			SpawnProp(leftSpace);
+//
+//		}
+//
+//
+//	}
+//
+//
+//	void SpawnProp(bool leftSpace){
+//
+//		//Les quatres FOR LOOP ci dessous ne sont pas identiques
+//		if(leftSpace){
+//			//De gauche a droite
+//			//Get the first pixel of the area of spawn
+//			for (x = 0; x < currenttexture.width; x++) {
+//				Color32 currentPixel = currenttexture.GetPixel(x, Mathf.FloorToInt(yFound));
+//				
+//				if(ColorChecker(true, currentPixel, colorToSearch)){
+//					
+//					xFound = x / 2;
+//					break;
+//					
+//				}
+//				
+//			}
+//			//Get the last pixel of the area of spawn
+//			for (x = x; x < currenttexture.width; x++) {
+//				Color32 currentPixel = currenttexture.GetPixel(x, Mathf.FloorToInt(yFound));
+//				if(ColorChecker(false, currentPixel, colorToSearch)){
+//					
+//					x2Found = x / 2;
+//					break;
+//					
+//				}
+//			}
+//		}else{
+//			//De droite a gauche
+//			//Get the first pixel of the area of spawn
+//			for (x = currenttexture.width; x > 0; x--) {
+//				Color32 currentPixel = currenttexture.GetPixel(x, Mathf.FloorToInt(yFound));
+//				
+//				if(ColorChecker(true, currentPixel, colorToSearch)){
+//					
+//					xFound = x / 2;
+//					break;
+//					
+//				}
+//				
+//			}
+//			//Get the last pixel of the area of spawn
+//			for (x = x; x > 0; x--) {
+//				Color32 currentPixel = currenttexture.GetPixel(x, Mathf.FloorToInt(yFound));
+//				if(ColorChecker(false, currentPixel, colorToSearch)){
+//					
+//					x2Found = x / 2;
+//					break;
+//					
+//				}
+//				
+//			}
+//		}
+//
+//		//Calcul du V3 de spawn
+//		float betweenX1andX2 = Mathf.Lerp(xFound, x2Found, Random.Range(0f, 1f));
+//		float porcent = betweenX1andX2 * 100f / 1024f;
+//		porcent = 200f * porcent / 100f;	//200 est le resultat de Vector3.Distance(boundPointLeft, boundPointRight)
+//		porcent /= 100f;
+//		Vector3 posToSPawn = Vector3.Lerp(boundPointLeft, boundPointRight, porcent);
+//
+//		//Spawn
+//		Instantiate(objectToSpawn, posToSPawn, Quaternion.identity);
+//	}
+//
+//	bool ColorChecker (bool searchForTheSameColor, Color32 currentPixel, Color32 colorToSearch){
+//		if(searchForTheSameColor){
+//			if(currentPixel.r == colorToSearch.r && currentPixel.g == colorToSearch.g && currentPixel.b == colorToSearch.b)
+//				return true;
+//		}else{
+//			if(currentPixel.r != colorToSearch.r || currentPixel.g != colorToSearch.g || currentPixel.b != colorToSearch.b)
+//				return true;
+//		}
+//		return false;
+//	}
+//	
+//
+//
+//	void OnValidate()
+//	{
+//		if (nextInstanceTimeRange.Length != SIZEARRAY)
+//		{
+//			Debug.LogWarning("Don't resize the 'array' please!");
+//			System.Array.Resize(ref nextInstanceTimeRange, SIZEARRAY);
+//		}
+//		if(objectsPerWave.Length != SIZEARRAY)
+//		{
+//			Debug.LogWarning("Don't resize the 'array' please!");
+//			System.Array.Resize(ref objectsPerWave, SIZEARRAY);
+//		}
+//	}
+//	
+//
+//}
+//
